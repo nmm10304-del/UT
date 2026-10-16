@@ -28,7 +28,7 @@
         }
         .container {
             text-align: center;
-            max-width: 950px;
+            max-width: 1050px;
             width: 95%;
         }
         
@@ -66,7 +66,7 @@
         }
         .btn-login:hover { background-color: #d85718; }
 
-        /* Contenedor Principal de la App */
+        /* Contenedor Principal */
         #appContent { 
             display: none; 
             background-color: rgba(255, 255, 255, 0.96);
@@ -211,7 +211,7 @@
         }
         .form-layout {
             display: flex;
-            align-items: center;
+            align-items: stretch;
             justify-content: center;
             gap: 25px;
             margin-top: 15px;
@@ -219,7 +219,7 @@
         .inputs-col {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
         .input-row {
             display: flex;
@@ -229,18 +229,18 @@
         .label-field {
             font-weight: bold;
             color: #2c3e50;
-            width: 190px;
+            width: 200px;
             text-align: right;
-            font-size: 14px;
+            font-size: 13px;
         }
         input[type="text"], input[type="password"], input[type="number"] {
-            padding: 8px 10px;
-            font-size: 15px;
+            padding: 7px 10px;
+            font-size: 14px;
             border: 2px solid #bdc3c7;
             border-radius: 6px;
             text-transform: uppercase;
             text-align: center;
-            width: 180px;
+            width: 200px;
             font-weight: bold;
             letter-spacing: 0.5px;
         }
@@ -253,23 +253,49 @@
         }
         input[type="number"] { -moz-appearance: textfield; }
         
-        /* Botón Guardar / Agregar */
+        /* Columna derecha: Guía + Botón Agregar */
+        .right-action-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            width: 170px;
+        }
+        .box-guia-input {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .box-guia-input label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        .box-guia-input input {
+            width: 150px;
+            padding: 8px 6px;
+            font-size: 13px;
+        }
+
         .btn-guardar {
             background-color: #2ecc71;
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 12px;
             font-size: 17px;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
-            width: 150px;
-            height: 140px;
+            width: 160px;
+            height: 110px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
             transition: background 0.2s, transform 0.2s;
+            margin-top: 10px;
         }
         .btn-guardar:hover { background-color: #27ae60; transform: translateY(-2px); }
         
@@ -401,24 +427,25 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 12px;
             text-align: left;
         }
         th {
             background-color: #2c3e50;
             color: white;
-            padding: 10px 8px;
+            padding: 10px 6px;
             position: sticky;
             top: 0;
             z-index: 10;
             text-align: center;
+            white-space: nowrap;
         }
-        td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 8px 8px; border-bottom: 1px solid #e2e8f0; text-align: center; }
         tr:nth-child(even) { background-color: #f8fafc; }
 
         .btn-action-icon {
             border: none;
-            padding: 4px 8px;
+            padding: 3px 6px;
             font-size: 12px;
             font-weight: bold;
             border-radius: 4px;
@@ -445,7 +472,7 @@
         }
         .btn-reset:hover { background-color: #c0392b; }
 
-        /* Estilos Modales */
+        /* Modales */
         .modal-admin-edit, .modal-timeout-alert {
             display: none;
             position: fixed;
@@ -457,25 +484,25 @@
         }
         .modal-content {
             background-color: white;
-            padding: 25px;
+            padding: 22px;
             border-radius: 10px;
             box-shadow: 0 4px 25px rgba(0,0,0,0.4);
-            width: 400px;
+            width: 420px;
             text-align: center;
         }
-        .modal-content h3 { margin-top: 0; color: #2c3e50; font-size: 18px; margin-bottom: 15px;}
+        .modal-content h3 { margin-top: 0; color: #2c3e50; font-size: 17px; margin-bottom: 12px;}
         .modal-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .modal-row label { font-weight: bold; font-size: 13px; color: #34495e; width: 150px; text-align: right; margin-right: 10px; }
+        .modal-row label { font-weight: bold; font-size: 12px; color: #34495e; width: 160px; text-align: right; margin-right: 10px; }
         .modal-row input, .modal-content select {
-            padding: 6px 8px; font-size: 13px; border: 2px solid #bdc3c7; border-radius: 6px; text-align: center; font-weight: bold; width: 180px; box-sizing: border-box;
+            padding: 6px 8px; font-size: 12px; border: 2px solid #bdc3c7; border-radius: 6px; text-align: center; font-weight: bold; width: 190px; box-sizing: border-box;
         }
-        .modal-buttons { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
-        .btn-modal { padding: 10px 15px; font-weight: bold; font-size: 14px; border: none; border-radius: 6px; cursor: pointer; flex: 1; }
+        .modal-buttons { display: flex; justify-content: space-between; margin-top: 18px; gap: 10px; }
+        .btn-modal { padding: 9px 12px; font-weight: bold; font-size: 13px; border: none; border-radius: 6px; cursor: pointer; flex: 1; }
         .btn-modal-save { background-color: #2ecc71; color: white; }
         .btn-modal-cancel { background-color: #95a5a6; color: white; }
         
@@ -497,7 +524,7 @@
 
     <div id="appContent">
         <div class="header-user-info">
-            <span id="txtUsuarioActivo">Usuario: </span>
+            <span id="txtUsuarioActivo">Usuario activo: SUPERVISOR DE ALMACÉN</span>
             <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
 
@@ -526,7 +553,7 @@
             <button class="btn-ut" onclick="mostrarFormulario('CD Contrans', '956')">CD Contrans <span>(956)</span></button>
         </div>
 
-        <!-- Formulario de Registro Actualizado -->
+        <!-- Formulario de Registro CD Actualizado -->
         <div id="seccionFormulario" class="form-registro">
             <h3 id="tituloFormulario" style="margin:0; color:#2c3e50; text-align: center;"></h3>
             <div class="form-layout">
@@ -537,18 +564,18 @@
                     </div>
                     <div class="input-row">
                         <span class="label-field">Número de envío (OS):</span>
-                        <input type="text" id="numEnvioOS" placeholder="Ej: OS-12345" autocomplete="off">
+                        <input type="text" id="numEnvioOS" placeholder="" autocomplete="off">
                     </div>
                     <div class="input-row">
-                        <span class="label-field">Cantidad de Pallets:</span>
-                        <input type="number" id="cantPallets" placeholder="0" min="0" autocomplete="off">
+                        <span class="label-field">Cantidad de Euro Pallet:</span>
+                        <input type="number" id="cantEuroPallets" placeholder="0" min="0" autocomplete="off">
                     </div>
                     <div class="input-row">
                         <span class="label-field">Cantidad de Caja Sensible:</span>
                         <input type="number" id="cantCajaSensible" placeholder="0" min="0" autocomplete="off">
                     </div>
                     <div class="input-row">
-                        <span class="label-field">Cantidad de Mueble Pallets:</span>
+                        <span class="label-field">Cantidad de Mueble Pallet:</span>
                         <input type="number" id="cantMueblePallets" placeholder="0" min="0" autocomplete="off">
                     </div>
                     <div class="input-row">
@@ -556,7 +583,15 @@
                         <input type="number" id="cantJaulas" placeholder="0" min="0" autocomplete="off">
                     </div>
                 </div>
-                <button class="btn-guardar" onclick="guardarRegistro()">Agregar</button>
+                
+                <!-- Columna derecha con Número de Guía y Botón Agregar -->
+                <div class="right-action-col">
+                    <div class="box-guia-input">
+                        <label for="numGuiaUT">Número de Guía:</label>
+                        <input type="text" id="numGuiaUT" placeholder="T528-00000000" autocomplete="off" maxlength="13">
+                    </div>
+                    <button class="btn-guardar" onclick="guardarRegistro()">Agregar</button>
+                </div>
             </div>
         </div>
 
@@ -568,7 +603,7 @@
             <button class="btn-delete-semana" onclick="eliminarSemanaCompletaAdmin()">❌ Eliminar Todos los Datos de esta Semana</button>
         </div>
 
-        <!-- 3ra imagen: Filtros idénticos -->
+        <!-- Filtros -->
         <div class="seccion-control-tabla">
             <div class="filtros-box">
                 <select id="filtroSede" onchange="actualizarTabla()">
@@ -585,7 +620,7 @@
             <button class="btn-excel" onclick="exportarExcel()">📊 Descargar Excel</button>
         </div>
 
-        <!-- Tabla con columnas adaptadas -->
+        <!-- Tabla -->
         <div class="tabla-contenedor">
             <table>
                 <thead>
@@ -593,9 +628,10 @@
                         <th>Sede / CD</th>
                         <th>N° Placa</th>
                         <th>N° Envío (OS)</th>
-                        <th>Pallets</th>
+                        <th>N° Guía</th>
+                        <th>Euro Pallets</th>
                         <th>Caja Sensible</th>
-                        <th>Mueble Pallets</th>
+                        <th>Mueble Pallet</th>
                         <th>Jaulas</th>
                         <th>Semana</th>
                         <th>Fecha y Hora</th>
@@ -607,7 +643,7 @@
             </table>
         </div>
 
-        <button id="botonResetSecreto" class="btn-reset" onclick="reiniciarTodo()">Limpiar Base de Datos</button>
+        <button id="botonResetSecreto" class="btn-reset" onclick="reiniciarTodo()">Limpiar Base de Datos (CD)</button>
         <div style="clear: both;"></div>
     </div>
 </div>
@@ -647,8 +683,13 @@
         </div>
 
         <div class="modal-row">
-            <label>Pallets:</label>
-            <input type="number" id="editModalPallets" min="0">
+            <label>N° Guía:</label>
+            <input type="text" id="editModalGuia" placeholder="T528-00000000" autocomplete="off" maxlength="13">
+        </div>
+
+        <div class="modal-row">
+            <label>Euro Pallets:</label>
+            <input type="number" id="editModalEuroPallets" min="0">
         </div>
 
         <div class="modal-row">
@@ -657,7 +698,7 @@
         </div>
 
         <div class="modal-row">
-            <label>Mueble Pallets:</label>
+            <label>Mueble Pallet:</label>
             <input type="number" id="editModalMueblePallets" min="0">
         </div>
 
@@ -692,8 +733,11 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    
+    // RAMA DEDICADA NUEVA: ut_cd (Inicia en blanco, sin data antigua)
+    const DB_PATH = 'ut_cd';
 
-    let usuarioLogueado = sessionStorage.getItem('ut_user_logged_v2') || "";
+    let usuarioLogueado = sessionStorage.getItem('ut_user_logged_cd') || "";
     let sedeSeleccionada = "";
     let codigoSeleccionado = "";
     let historial = []; 
@@ -706,7 +750,8 @@
 
     const inputPlaca = document.getElementById('placaUT');
     const inputOS = document.getElementById('numEnvioOS');
-    const inputPallets = document.getElementById('cantPallets');
+    const inputGuia = document.getElementById('numGuiaUT');
+    const inputEuroPallets = document.getElementById('cantEuroPallets');
     const inputCajaSensible = document.getElementById('cantCajaSensible');
     const inputMueblePallets = document.getElementById('cantMueblePallets');
     const inputJaulas = document.getElementById('cantJaulas');
@@ -738,9 +783,14 @@
         const u = inputUsuarioLogin.value.trim().toUpperCase();
         const p = passInput.value.trim();
 
-        if ((u === "DESPACHO" && p === "LMO528") || (u === "ADMIN" && p === "admin")) {
-            usuarioLogueado = u;
-            sessionStorage.setItem('ut_user_logged_v2', u);
+        // Nuevas credenciales solicitadas
+        if (u === "SUPER528" && p === "Hpsa2030") {
+            usuarioLogueado = "SUPERVISOR DE ALMACÉN";
+            sessionStorage.setItem('ut_user_logged_cd', usuarioLogueado);
+            verificarSesion();
+        } else if (u === "ADMIN" && p === "admin") {
+            usuarioLogueado = "ADMIN";
+            sessionStorage.setItem('ut_user_logged_cd', usuarioLogueado);
             verificarSesion();
         } else {
             alert("Usuario o contraseña incorrectos.");
@@ -774,7 +824,7 @@
 
     function cerrarSesion() {
         usuarioLogueado = "";
-        sessionStorage.removeItem('ut_user_logged_v2');
+        sessionStorage.removeItem('ut_user_logged_cd');
         inputUsuarioLogin.value = "";
         passInput.value = "";
         detenerTodosLosTemporizadores();
@@ -783,7 +833,7 @@
     }
 
     function inicializarSincronizacionNube() {
-        db.ref('tardanzas').on('value', function(snapshot) {
+        db.ref(DB_PATH).on('value', function(snapshot) {
             historial = [];
             snapshot.forEach(function(childSnapshot) {
                 let item = childSnapshot.val();
@@ -795,7 +845,7 @@
         });
     }
 
-    /* Sistema de Inactividad */
+    /* Control Inactividad */
     function reiniciarTemporizadorInactividad() {
         if (usuarioLogueado === "" || document.getElementById('modalTimeoutAlert').style.display === "flex") return;
         clearTimeout(temporizadorInactividad);
@@ -833,7 +883,8 @@
     function limpiarFormularioCompleto() {
         inputPlaca.value = "";
         inputOS.value = "";
-        inputPallets.value = "";
+        inputGuia.value = "";
+        inputEuroPallets.value = "";
         inputCajaSensible.value = "";
         inputMueblePallets.value = "";
         inputJaulas.value = "";
@@ -856,14 +907,11 @@
         lista.style.display = (lista.style.display === "block") ? "none" : "block";
     }
 
-    /* Validación estricta de Placa según requerimiento 6 */
+    /* Validación y formato de Placa (XXX-XXX) */
     inputPlaca.addEventListener('input', function(e) {
         let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        
-        // Los primeros 3 caracteres solo pueden ser letras A-Z
         let letras = val.slice(0, 3).replace(/[^A-Z]/g, '');
-        let resto = val.slice(3, 6); // Los 3 siguientes pueden ser letras o números
-        
+        let resto = val.slice(3, 6);
         let resultado = letras + resto;
         if (resultado.length > 3) {
             e.target.value = resultado.slice(0, 3) + '-' + resultado.slice(3, 6);
@@ -873,12 +921,29 @@
     });
 
     function esPlacaValida(placa) {
-        // Formato XXX-XXX: 3 letras obligatorias al inicio, guión y 3 caracteres alfanuméricos
         const regexPlaca = /^[A-Z]{3}-[0-9A-Z]{3}\$/;
         return regexPlaca.test(placa);
     }
 
-    /* Navegación rápida con Enter */
+    /* Formato automático de Guía tipo T528-00000000 */
+    function aplicarFormatoGuia(inputElement) {
+        inputElement.addEventListener('input', function(e) {
+            let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (val.length > 12) val = val.slice(0, 12);
+            
+            if (val.length > 4) {
+                let serie = val.slice(0, 4);
+                let correlativo = val.slice(4, 12).replace(/[^0-9]/g, '');
+                e.target.value = serie + '-' + correlativo;
+            } else {
+                e.target.value = val;
+            }
+        });
+    }
+    aplicarFormatoGuia(inputGuia);
+    aplicarFormatoGuia(document.getElementById('editModalGuia'));
+
+    /* Navegación con Enter */
     inputPlaca.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -886,11 +951,12 @@
             else { alert("Placa inválida. Recuerda que los primeros 3 caracteres deben ser letras (Ej: ABC-123)."); }
         }
     });
-    inputOS.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputPallets.focus(); } });
-    inputPallets.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputCajaSensible.focus(); } });
+    inputOS.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputEuroPallets.focus(); } });
+    inputEuroPallets.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputCajaSensible.focus(); } });
     inputCajaSensible.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputMueblePallets.focus(); } });
     inputMueblePallets.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputJaulas.focus(); } });
-    inputJaulas.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); guardarRegistro(); } });
+    inputJaulas.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputGuia.focus(); } });
+    inputGuia.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); guardarRegistro(); } });
 
     function obtenerDetalleSemana(fechaReferencia = new Date()) {
         const d = new Date(Date.UTC(fechaReferencia.getFullYear(), fechaReferencia.getMonth(), fechaReferencia.getDate()));
@@ -923,7 +989,6 @@
         sedeSeleccionada = sede;
         codigoSeleccionado = code;
         document.getElementById('tituloFormulario').innerText = `Registrar para: ${sede} (${code})`;
-        document.getElementById('seccionFormulario').style.display = "block";
         limpiarFormularioCompleto();
         document.getElementById('seccionFormulario').style.display = "block";
         inputPlaca.focus();
@@ -932,7 +997,8 @@
     function guardarRegistro() {
         const placaValue = inputPlaca.value.trim().toUpperCase();
         const osValue = inputOS.value.trim().toUpperCase();
-        const palletsValue = parseInt(inputPallets.value.trim()) || 0;
+        const guiaValue = inputGuia.value.trim().toUpperCase();
+        const euroPalletsValue = parseInt(inputEuroPallets.value.trim()) || 0;
         const cajaSensibleValue = parseInt(inputCajaSensible.value.trim()) || 0;
         const mueblePalletsValue = parseInt(inputMueblePallets.value.trim()) || 0;
         const jaulasValue = parseInt(inputJaulas.value.trim()) || 0;
@@ -957,7 +1023,8 @@
             sede: `${sedeSeleccionada} (${codigoSeleccionado})`,
             placa: placaValue,
             numEnvioOS: osValue,
-            pallets: palletsValue,
+            numGuia: guiaValue,
+            euroPallets: euroPalletsValue,
             cajaSensible: cajaSensibleValue,
             mueblePallets: mueblePalletsValue,
             jaulas: jaulasValue,
@@ -966,11 +1033,10 @@
             usuario: usuarioLogueado
         };
 
-        db.ref('tardanzas').push(nuevoRegistro);
+        db.ref(DB_PATH).push(nuevoRegistro);
         limpiarFormularioCompleto();
     }
 
-    /* Recalcular KPIs CD Contrans y CD Stol */
     function recalcularCuadrosResumen(listaFiltrada) {
         let totalContrans = 0;
         let totalStol = 0;
@@ -1090,7 +1156,7 @@
             let nodosEliminados = 0;
             historial.forEach(item => {
                 if (item.semanaDetalle === semanaAEliminar) {
-                    db.ref('tardanzas').child(item.firebaseKey).remove();
+                    db.ref(DB_PATH).child(item.firebaseKey).remove();
                     nodosEliminados++;
                 }
             });
@@ -1125,15 +1191,16 @@
 
                 fila.innerHTML = `
                     <td style="font-weight:bold;">${item.sede}</td>
-                    <td style="font-weight:bold; letter-spacing:0.5px; text-align:center;">${item.placa}</td>
-                    <td style="text-align:center; color:#2980b9; font-weight:bold;">${item.numEnvioOS || item.nvs || '-'}</td>
-                    <td style="text-align:center;">${item.pallets ?? '-'}</td>
-                    <td style="text-align:center;">${item.cajaSensible ?? '-'}</td>
-                    <td style="text-align:center;">${item.mueblePallets ?? '-'}</td>
-                    <td style="text-align:center;">${item.jaulas ?? '-'}</td>
-                    <td style="text-align:center;">${(item.semanaDetalle || '').split(' (')[0]}</td>
-                    <td style="text-align:center; font-size:12px;">${item.tiempo}</td>
-                    <td style="font-size:11px; font-weight:bold; color:#7f8c8d; text-align:center;">${item.usuario}</td>
+                    <td style="font-weight:bold; letter-spacing:0.5px;">${item.placa}</td>
+                    <td style="color:#2980b9; font-weight:bold;">${item.numEnvioOS || '-'}</td>
+                    <td style="font-weight:bold; color:#2c3e50;">${item.numGuia || '-'}</td>
+                    <td>${item.euroPallets ?? item.pallets ?? '-'}</td>
+                    <td>${item.cajaSensible ?? '-'}</td>
+                    <td>${item.mueblePallets ?? '-'}</td>
+                    <td>${item.jaulas ?? '-'}</td>
+                    <td>${(item.semanaDetalle || '').split(' (')[0]}</td>
+                    <td style="font-size:11px;">${item.tiempo}</td>
+                    <td style="font-size:11px; font-weight:bold; color:#7f8c8d;">${item.usuario}</td>
                     ${celdaAccion}
                 `;
                 tbody.appendChild(fila);
@@ -1141,7 +1208,7 @@
         });
 
         if (tbody.innerHTML === "") {
-            tbody.innerHTML = `<tr><td colspan="${usuarioLogueado === 'ADMIN' ? 11 : 10}" style="text-align:center; color:#999; padding:20px;">No hay registros acumulados en esta selección.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="${usuarioLogueado === 'ADMIN' ? 12 : 11}" style="text-align:center; color:#999; padding:20px;">No hay registros acumulados en esta selección.</td></tr>`;
         }
 
         recalcularCuadrosResumen(registrosEnVista);
@@ -1149,7 +1216,7 @@
 
     function eliminarRegistroAdmin(firebaseKey) {
         if (confirm("¿Estás seguro de que deseas eliminar este registro individual?")) {
-            db.ref('tardanzas').child(firebaseKey).remove();
+            db.ref(DB_PATH).child(firebaseKey).remove();
         }
     }
 
@@ -1160,8 +1227,9 @@
         document.getElementById('editRowId').value = registro.firebaseKey; 
         document.getElementById('editModalSede').value = registro.sede.includes('954') ? "CD Stol (954)" : "CD Contrans (956)";
         document.getElementById('editModalPlaca').value = registro.placa;
-        document.getElementById('editModalOS').value = registro.numEnvioOS || registro.nvs || ""; 
-        document.getElementById('editModalPallets').value = registro.pallets ?? 0;
+        document.getElementById('editModalOS').value = registro.numEnvioOS || ""; 
+        document.getElementById('editModalGuia').value = registro.numGuia || ""; 
+        document.getElementById('editModalEuroPallets').value = registro.euroPallets ?? registro.pallets ?? 0;
         document.getElementById('editModalCajaSensible').value = registro.cajaSensible ?? 0;
         document.getElementById('editModalMueblePallets').value = registro.mueblePallets ?? 0;
         document.getElementById('editModalJaulas').value = registro.jaulas ?? 0;
@@ -1181,11 +1249,12 @@
             return; 
         }
 
-        db.ref('tardanzas').child(firebaseKey).update({
+        db.ref(DB_PATH).child(firebaseKey).update({
             sede: document.getElementById('editModalSede').value,
             placa: placaVal,
             numEnvioOS: document.getElementById('editModalOS').value.trim().toUpperCase(),
-            pallets: parseInt(document.getElementById('editModalPallets').value) || 0,
+            numGuia: document.getElementById('editModalGuia').value.trim().toUpperCase(),
+            euroPallets: parseInt(document.getElementById('editModalEuroPallets').value) || 0,
             cajaSensible: parseInt(document.getElementById('editModalCajaSensible').value) || 0,
             mueblePallets: parseInt(document.getElementById('editModalMueblePallets').value) || 0,
             jaulas: parseInt(document.getElementById('editModalJaulas').value) || 0,
@@ -1200,7 +1269,7 @@
         if (historial.length === 0) { alert("No hay datos para exportar."); return; }
 
         let csvContent = "\uFEFF"; 
-        csvContent += "Sede / CD;N° Placa;N° Envio (OS);Cantidad Pallets;Cantidad Caja Sensible;Cantidad Mueble Pallets;Cantidad Jaulas;Semana;Fecha y Hora;Registrado Por\n";
+        csvContent += "Sede / CD;N° Placa;N° Envio (OS);N° Guia;Cantidad Euro Pallet;Cantidad Caja Sensible;Cantidad Mueble Pallet;Cantidad Jaulas;Semana;Fecha y Hora;Registrado Por\n";
 
         const filterSede = document.getElementById('filtroSede').value;
 
@@ -1209,13 +1278,14 @@
             const cumpleSemana = (semanasSeleccionadasGlobal.includes("TODOS") || semanasSeleccionadasGlobal.includes(item.semanaDetalle));
 
             if (cumpleSede && cumpleSemana) {
-                const os = item.numEnvioOS || item.nvs || "";
-                const pallets = item.pallets ?? 0;
+                const os = item.numEnvioOS || "";
+                const guia = item.numGuia || "";
+                const euroPallets = item.euroPallets ?? item.pallets ?? 0;
                 const sensible = item.cajaSensible ?? 0;
                 const muebles = item.mueblePallets ?? 0;
                 const jaulas = item.jaulas ?? 0;
 
-                csvContent += `"${item.sede}";"${item.placa}";"=""${os}""";${pallets};${sensible};${muebles};${jaulas};"${item.semanaDetalle}";"${item.tiempo}";"${item.usuario}"\n`;
+                csvContent += `"${item.sede}";"${item.placa}";"=""${os}""";"=""${guia}""";${euroPallets};${sensible};${muebles};${jaulas};"${item.semanaDetalle}";"${item.tiempo}";"${item.usuario}"\n`;
             }
         });
 
@@ -1230,7 +1300,9 @@
     }
 
     function reiniciarTodo() {
-        if (confirm("¿Deseas vaciar por completo toda la base de datos de UT?")) { db.ref('tardanzas').remove(); }
+        if (confirm("¿Deseas vaciar por completo la base de datos de UT del CD?")) { 
+            db.ref(DB_PATH).remove(); 
+        }
     }
 </script>
 
