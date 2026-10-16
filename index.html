@@ -511,7 +511,7 @@
         .countdown-number { font-size: 42px; font-weight: 900; color: #c0392b; margin: 15px 0; }
         @keyframes parpadeoAlerta { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* Modal Alerta Bonita "Estimado usuario..." */
+        /* Modal Alerta "Estimado usuario..." */
         .modal-alert-box {
             width: 360px;
             border-top: 5px solid #f16821;
@@ -677,7 +677,7 @@
     </div>
 </div>
 
-<!-- Modal Alerta Visual "Estimado usuario..." -->
+<!-- Modal Alerta "Estimado usuario..." -->
 <div id="modalAlertCustom" class="modal-custom-alert">
     <div class="modal-content modal-alert-box">
         <h3>Estimado usuario...</h3>
@@ -798,7 +798,6 @@
     const inputUsuarioLogin = document.getElementById('userInput');
     const passInput = document.getElementById('passInput');
 
-    /* Función de Alerta Elegante "Estimado usuario..." */
     function mostrarAlerta(mensaje, elementoFoco = null) {
         elementoFocoPostAlerta = elementoFoco;
         document.getElementById('txtMensajeAlertaCustom').innerText = mensaje;
@@ -959,22 +958,31 @@
         lista.style.display = (lista.style.display === "block") ? "none" : "block";
     }
 
-    /* Placa flexible (Permite letras y números en cualquier posición) */
-    inputPlaca.addEventListener('input', function(e) {
-        let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        if (val.length > 6) val = val.slice(0, 6);
-        
-        if (val.length > 3) {
-            e.target.value = val.slice(0, 3) + '-' + val.slice(3, 6);
-        } else {
-            e.target.value = val;
-        }
-    });
+    /* Formateador estricto de Placa: Siempre Mayúsculas y formato XXX-XXX */
+    function aplicarMascaraPlaca(inputElement) {
+        inputElement.addEventListener('input', function(e) {
+            // Fuerza mayúsculas y filtra cualquier carácter que no sea letra o número
+            let limpio = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (limpio.length > 6) limpio = limpio.slice(0, 6);
+            
+            if (limpio.length > 3) {
+                e.target.value = limpio.slice(0, 3) + '-' + limpio.slice(3, 6);
+            } else {
+                e.target.value = limpio;
+            }
+        });
+    }
 
-    function esPlacaValida(placa) {
-        // Valida que tenga exactamente 3 alfanuméricos, guion y 3 alfanuméricos
-        const regexPlaca = /^[A-Z0-9]{3}-[A-Z0-9]{3}\$/;
-        return regexPlaca.test(placa);
+    aplicarMascaraPlaca(inputPlaca);
+    aplicarMascaraPlaca(document.getElementById('editModalPlaca'));
+
+    /* Validador: verifica que contenga exactamente 6 caracteres alfanuméricos limpios */
+    function normalizarPlaca(placa) {
+        let limpio = placa.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (limpio.length === 6) {
+            return limpio.slice(0, 3) + '-' + limpio.slice(3, 6);
+        }
+        return null;
     }
 
     /* Manejo del input de guía: prefijo dinámico T954- o T956- según sede */
@@ -996,7 +1004,6 @@
         e.target.value = prefijo + correlativo;
     });
 
-    // En edición admin: formato TXXX-XXXXXXXX
     document.getElementById('editModalGuia').addEventListener('input', function(e) {
         let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
         if (val.length > 12) val = val.slice(0, 12);
@@ -1013,8 +1020,8 @@
     inputPlaca.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            if (esPlacaValida(this.value.trim())) { inputOS.focus(); }
-            else { mostrarAlerta("Por favor, introduce una placa válida completa (Ej: ASY-823 o D4Z-727).", inputPlaca); }
+            if (normalizarPlaca(this.value.trim())) { inputOS.focus(); }
+            else { mostrarAlerta("Por favor, introduce una placa válida completa de 6 caracteres con su guión (Ej: ASY-128 o D4Z-727).", inputPlaca); }
         }
     });
     inputOS.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputEuroPallets.focus(); } });
@@ -1058,7 +1065,6 @@
         limpiarFormularioCompleto();
         document.getElementById('seccionFormulario').style.display = "block";
         
-        // Autocompleta automáticamente según la sede seleccionada
         if (code === '954') {
             inputGuia.value = "T954-";
         } else if (code === '956') {
@@ -1069,7 +1075,8 @@
     }
 
     function guardarRegistro() {
-        const placaValue = inputPlaca.value.trim().toUpperCase();
+        const placaRaw = inputPlaca.value.trim();
+        const placaFormateada = normalizarPlaca(placaRaw);
         const osValue = inputOS.value.trim().toUpperCase();
         const guiaValue = inputGuia.value.trim().toUpperCase();
         const euroPalletsValue = parseInt(inputEuroPallets.value.trim()) || 0;
@@ -1077,8 +1084,8 @@
         const mueblePalletsValue = parseInt(inputMueblePallets.value.trim()) || 0;
         const jaulasValue = parseInt(inputJaulas.value.trim()) || 0;
 
-        if (!esPlacaValida(placaValue)) {
-            mostrarAlerta("Por favor, introduce una placa válida completa de 6 caracteres (Ej: ASY-823 o D4Z-727).", inputPlaca);
+        if (!placaFormateada) {
+            mostrarAlerta("Por favor, introduce una placa válida completa de 6 caracteres (Ej: ASY-128 o D4Z-727).", inputPlaca);
             return;
         }
 
@@ -1087,7 +1094,6 @@
             return;
         }
 
-        // Validación estricta de número de guía
         const prefijoEsperado = codigoSeleccionado === '954' ? 'T954-' : 'T956-';
         const numeroCorrelativo = guiaValue.replace(prefijoEsperado, '').trim();
 
@@ -1102,7 +1108,7 @@
         const nuevoRegistro = {
             id: Date.now(),
             sede: `${sedeSeleccionada} (${codigoSeleccionado})`,
-            placa: placaValue,
+            placa: placaFormateada,
             numEnvioOS: osValue,
             numGuia: guiaValue,
             euroPallets: euroPalletsValue,
@@ -1323,16 +1329,17 @@
 
     function guardarEdicionModal() {
         const firebaseKey = document.getElementById('editRowId').value;
-        const placaVal = document.getElementById('editModalPlaca').value.trim().toUpperCase();
+        const placaRaw = document.getElementById('editModalPlaca').value.trim();
+        const placaFormateada = normalizarPlaca(placaRaw);
 
-        if (!esPlacaValida(placaVal)) { 
-            mostrarAlerta("Formato de placa inválido (debe contener 6 caracteres, ej: ASY-823 o D4Z-727).", document.getElementById('editModalPlaca')); 
+        if (!placaFormateada) { 
+            mostrarAlerta("Formato de placa inválido (debe contener 6 caracteres, ej: ASY-128 o D4Z-727).", document.getElementById('editModalPlaca')); 
             return; 
         }
 
         db.ref(DB_PATH).child(firebaseKey).update({
             sede: document.getElementById('editModalSede').value,
-            placa: placaVal,
+            placa: placaFormateada,
             numEnvioOS: document.getElementById('editModalOS').value.trim().toUpperCase(),
             numGuia: document.getElementById('editModalGuia').value.trim().toUpperCase(),
             euroPallets: parseInt(document.getElementById('editModalEuroPallets').value) || 0,
