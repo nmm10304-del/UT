@@ -589,7 +589,7 @@
                 <div class="inputs-col">
                     <div class="input-row">
                         <span class="label-field">N° Placa:</span>
-                        <input type="text" id="placaUT" placeholder="XXX-XXX" autocomplete="off" maxlength="7">
+                        <input type="text" id="placaUT" placeholder="XXX-XXX" autocomplete="off">
                     </div>
                     <div class="input-row">
                         <span class="label-field">Número de envío (OS):</span>
@@ -712,7 +712,7 @@
         
         <div class="modal-row">
             <label>N° Placa:</label>
-            <input type="text" id="editModalPlaca" placeholder="XXX-XXX" autocomplete="off" maxlength="7">
+            <input type="text" id="editModalPlaca" placeholder="XXX-XXX" autocomplete="off">
         </div>
         
         <div class="modal-row">
@@ -958,32 +958,14 @@
         lista.style.display = (lista.style.display === "block") ? "none" : "block";
     }
 
-    /* Formateador estricto de Placa: Siempre Mayúsculas y formato XXX-XXX */
-    function aplicarMascaraPlaca(inputElement) {
-        inputElement.addEventListener('input', function(e) {
-            // Fuerza mayúsculas y filtra cualquier carácter que no sea letra o número
-            let limpio = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            if (limpio.length > 6) limpio = limpio.slice(0, 6);
-            
-            if (limpio.length > 3) {
-                e.target.value = limpio.slice(0, 3) + '-' + limpio.slice(3, 6);
-            } else {
-                e.target.value = limpio;
-            }
-        });
-    }
+    /* Placa 100% libre: Convierte siempre a Mayúsculas sin validar ni bloquear */
+    inputPlaca.addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase();
+    });
 
-    aplicarMascaraPlaca(inputPlaca);
-    aplicarMascaraPlaca(document.getElementById('editModalPlaca'));
-
-    /* Validador: verifica que contenga exactamente 6 caracteres alfanuméricos limpios */
-    function normalizarPlaca(placa) {
-        let limpio = placa.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        if (limpio.length === 6) {
-            return limpio.slice(0, 3) + '-' + limpio.slice(3, 6);
-        }
-        return null;
-    }
+    document.getElementById('editModalPlaca').addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase();
+    });
 
     /* Manejo del input de guía: prefijo dinámico T954- o T956- según sede */
     inputGuia.addEventListener('input', function(e) {
@@ -1016,12 +998,11 @@
         }
     });
 
-    /* Navegación rápida con Enter */
+    /* Navegación con Enter directa sin alertas de placa */
     inputPlaca.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            if (normalizarPlaca(this.value.trim())) { inputOS.focus(); }
-            else { mostrarAlerta("Por favor, introduce una placa válida completa de 6 caracteres con su guión (Ej: ASY-128 o D4Z-727).", inputPlaca); }
+            inputOS.focus();
         }
     });
     inputOS.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputEuroPallets.focus(); } });
@@ -1075,19 +1056,13 @@
     }
 
     function guardarRegistro() {
-        const placaRaw = inputPlaca.value.trim();
-        const placaFormateada = normalizarPlaca(placaRaw);
+        const placaValue = inputPlaca.value.trim().toUpperCase();
         const osValue = inputOS.value.trim().toUpperCase();
         const guiaValue = inputGuia.value.trim().toUpperCase();
         const euroPalletsValue = parseInt(inputEuroPallets.value.trim()) || 0;
         const cajaSensibleValue = parseInt(inputCajaSensible.value.trim()) || 0;
         const mueblePalletsValue = parseInt(inputMueblePallets.value.trim()) || 0;
         const jaulasValue = parseInt(inputJaulas.value.trim()) || 0;
-
-        if (!placaFormateada) {
-            mostrarAlerta("Por favor, introduce una placa válida completa de 6 caracteres (Ej: ASY-128 o D4Z-727).", inputPlaca);
-            return;
-        }
 
         if (osValue === "") {
             mostrarAlerta("Por favor, ingresa el Número de envío (OS).", inputOS);
@@ -1108,7 +1083,7 @@
         const nuevoRegistro = {
             id: Date.now(),
             sede: `${sedeSeleccionada} (${codigoSeleccionado})`,
-            placa: placaFormateada,
+            placa: placaValue,
             numEnvioOS: osValue,
             numGuia: guiaValue,
             euroPallets: euroPalletsValue,
@@ -1329,17 +1304,11 @@
 
     function guardarEdicionModal() {
         const firebaseKey = document.getElementById('editRowId').value;
-        const placaRaw = document.getElementById('editModalPlaca').value.trim();
-        const placaFormateada = normalizarPlaca(placaRaw);
-
-        if (!placaFormateada) { 
-            mostrarAlerta("Formato de placa inválido (debe contener 6 caracteres, ej: ASY-128 o D4Z-727).", document.getElementById('editModalPlaca')); 
-            return; 
-        }
+        const placaVal = document.getElementById('editModalPlaca').value.trim().toUpperCase();
 
         db.ref(DB_PATH).child(firebaseKey).update({
             sede: document.getElementById('editModalSede').value,
-            placa: placaFormateada,
+            placa: placaVal,
             numEnvioOS: document.getElementById('editModalOS').value.trim().toUpperCase(),
             numGuia: document.getElementById('editModalGuia').value.trim().toUpperCase(),
             euroPallets: parseInt(document.getElementById('editModalEuroPallets').value) || 0,
