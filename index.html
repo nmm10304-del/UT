@@ -958,38 +958,37 @@
         lista.style.display = (lista.style.display === "block") ? "none" : "block";
     }
 
-    /* Formateador Inteligente de Placa: Auto-guion al 3er carácter + Mayúsculas */
+    /* Formateador estricto de placa: máximo 6 caracteres y guion automático XXX-XXX */
     function configurarFormatoPlaca(inputElement) {
-        let valorAnterior = "";
-
         inputElement.addEventListener('input', function(e) {
-            let actual = e.target.value.toUpperCase();
+            // Elimina espacios y símbolos extra, dejando solo letras y números en mayúsculas
+            let limpio = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
             
-            // Si el usuario está borrando hacia atrás, permitir borrar sin forzar el guion de vuelta
-            if (actual.length < valorAnterior.length) {
-                valorAnterior = actual;
-                e.target.value = actual;
-                return;
+            // Límite estricto: no permite más de 6 caracteres alfanuméricos
+            if (limpio.length > 6) {
+                limpio = limpio.slice(0, 6);
             }
 
-            // Quita todo lo que no sea alfanumérico
-            let limpio = actual.replace(/[^A-Z0-9]/g, '');
-            if (limpio.length > 6) limpio = limpio.slice(0, 6);
-
-            // Si tiene 3 o más caracteres, coloca el guion automáticamente: HSU -> HSU-
-            if (limpio.length >= 3) {
+            // Si tiene más de 3 caracteres, separa con guion inmediatamente
+            if (limpio.length > 3) {
                 e.target.value = limpio.slice(0, 3) + '-' + limpio.slice(3);
             } else {
                 e.target.value = limpio;
             }
-            valorAnterior = e.target.value;
+        });
+
+        // Soporte para borrar limpiamente hacia atrás sin atascarse en el guion
+        inputElement.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && this.value.length === 5 && this.value.endsWith('-')) {
+                this.value = this.value.slice(0, 3);
+            }
         });
     }
 
     configurarFormatoPlaca(inputPlaca);
     configurarFormatoPlaca(document.getElementById('editModalPlaca'));
 
-    /* Manejo del input de guía: prefijo dinámico T954- o T956- según sede */
+    /* Input de Guía con prefijo automático */
     inputGuia.addEventListener('input', function(e) {
         const prefijo = codigoSeleccionado === '954' ? 'T954-' : 'T956-';
         let val = e.target.value.toUpperCase();
@@ -1020,7 +1019,7 @@
         }
     });
 
-    /* Navegación fluida con Enter */
+    /* Navegación rápida con Enter */
     inputPlaca.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -1086,10 +1085,10 @@
         const mueblePalletsValue = parseInt(inputMueblePallets.value.trim()) || 0;
         const jaulasValue = parseInt(inputJaulas.value.trim()) || 0;
 
-        // Si la placa tiene 6 caracteres y no tiene guion, se lo aseguramos
+        // Asegura formato de placa XXX-XXX si ingresaron los 6 caracteres
         let limpioPlaca = placaValue.replace(/[^A-Z0-9]/g, '');
-        if (limpioPlaca.length === 6 && !placaValue.includes('-')) {
-            placaValue = limpioPlaca.slice(0, 3) + '-' + limpioPlaca.slice(3);
+        if (limpioPlaca.length >= 3) {
+            placaValue = limpioPlaca.slice(0, 3) + '-' + limpioPlaca.slice(3, 6);
         }
 
         if (osValue === "") {
@@ -1335,8 +1334,8 @@
         let placaVal = document.getElementById('editModalPlaca').value.trim().toUpperCase();
 
         let limpioPlaca = placaVal.replace(/[^A-Z0-9]/g, '');
-        if (limpioPlaca.length === 6 && !placaVal.includes('-')) {
-            placaVal = limpioPlaca.slice(0, 3) + '-' + limpioPlaca.slice(3);
+        if (limpioPlaca.length >= 3) {
+            placaVal = limpioPlaca.slice(0, 3) + '-' + limpioPlaca.slice(3, 6);
         }
 
         db.ref(DB_PATH).child(firebaseKey).update({
