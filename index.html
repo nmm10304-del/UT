@@ -589,7 +589,7 @@
                 <div class="inputs-col">
                     <div class="input-row">
                         <span class="label-field">N° Placa:</span>
-                        <input type="text" id="placaUT" placeholder="XXX-XXX" autocomplete="off">
+                        <input type="text" id="placaUT" placeholder="XXX-XXX" autocomplete="off" maxlength="7">
                     </div>
                     <div class="input-row">
                         <span class="label-field">Número de envío (OS):</span>
@@ -712,7 +712,7 @@
         
         <div class="modal-row">
             <label>N° Placa:</label>
-            <input type="text" id="editModalPlaca" placeholder="XXX-XXX" autocomplete="off">
+            <input type="text" id="editModalPlaca" placeholder="XXX-XXX" autocomplete="off" maxlength="7">
         </div>
         
         <div class="modal-row">
@@ -958,14 +958,36 @@
         lista.style.display = (lista.style.display === "block") ? "none" : "block";
     }
 
-    /* Placa 100% libre: Convierte siempre a Mayúsculas sin validar ni bloquear */
-    inputPlaca.addEventListener('input', function(e) {
-        e.target.value = e.target.value.toUpperCase();
-    });
+    /* Formateador Inteligente de Placa: Auto-guion al 3er carácter + Mayúsculas */
+    function configurarFormatoPlaca(inputElement) {
+        let valorAnterior = "";
 
-    document.getElementById('editModalPlaca').addEventListener('input', function(e) {
-        e.target.value = e.target.value.toUpperCase();
-    });
+        inputElement.addEventListener('input', function(e) {
+            let actual = e.target.value.toUpperCase();
+            
+            // Si el usuario está borrando hacia atrás, permitir borrar sin forzar el guion de vuelta
+            if (actual.length < valorAnterior.length) {
+                valorAnterior = actual;
+                e.target.value = actual;
+                return;
+            }
+
+            // Quita todo lo que no sea alfanumérico
+            let limpio = actual.replace(/[^A-Z0-9]/g, '');
+            if (limpio.length > 6) limpio = limpio.slice(0, 6);
+
+            // Si tiene 3 o más caracteres, coloca el guion automáticamente: HSU -> HSU-
+            if (limpio.length >= 3) {
+                e.target.value = limpio.slice(0, 3) + '-' + limpio.slice(3);
+            } else {
+                e.target.value = limpio;
+            }
+            valorAnterior = e.target.value;
+        });
+    }
+
+    configurarFormatoPlaca(inputPlaca);
+    configurarFormatoPlaca(document.getElementById('editModalPlaca'));
 
     /* Manejo del input de guía: prefijo dinámico T954- o T956- según sede */
     inputGuia.addEventListener('input', function(e) {
@@ -998,7 +1020,7 @@
         }
     });
 
-    /* Navegación con Enter directa sin alertas de placa */
+    /* Navegación fluida con Enter */
     inputPlaca.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -1056,13 +1078,19 @@
     }
 
     function guardarRegistro() {
-        const placaValue = inputPlaca.value.trim().toUpperCase();
+        let placaValue = inputPlaca.value.trim().toUpperCase();
         const osValue = inputOS.value.trim().toUpperCase();
         const guiaValue = inputGuia.value.trim().toUpperCase();
         const euroPalletsValue = parseInt(inputEuroPallets.value.trim()) || 0;
         const cajaSensibleValue = parseInt(inputCajaSensible.value.trim()) || 0;
         const mueblePalletsValue = parseInt(inputMueblePallets.value.trim()) || 0;
         const jaulasValue = parseInt(inputJaulas.value.trim()) || 0;
+
+        // Si la placa tiene 6 caracteres y no tiene guion, se lo aseguramos
+        let limpioPlaca = placaValue.replace(/[^A-Z0-9]/g, '');
+        if (limpioPlaca.length === 6 && !placaValue.includes('-')) {
+            placaValue = limpioPlaca.slice(0, 3) + '-' + limpioPlaca.slice(3);
+        }
 
         if (osValue === "") {
             mostrarAlerta("Por favor, ingresa el Número de envío (OS).", inputOS);
@@ -1304,7 +1332,12 @@
 
     function guardarEdicionModal() {
         const firebaseKey = document.getElementById('editRowId').value;
-        const placaVal = document.getElementById('editModalPlaca').value.trim().toUpperCase();
+        let placaVal = document.getElementById('editModalPlaca').value.trim().toUpperCase();
+
+        let limpioPlaca = placaVal.replace(/[^A-Z0-9]/g, '');
+        if (limpioPlaca.length === 6 && !placaVal.includes('-')) {
+            placaVal = limpioPlaca.slice(0, 3) + '-' + limpioPlaca.slice(3);
+        }
 
         db.ref(DB_PATH).child(firebaseKey).update({
             sede: document.getElementById('editModalSede').value,
