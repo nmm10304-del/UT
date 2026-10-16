@@ -276,7 +276,8 @@
         .box-guia-input input {
             width: 150px;
             padding: 8px 6px;
-            font-size: 13px;
+            font-size: 14px;
+            color: #2c3e50;
         }
 
         .btn-guardar {
@@ -473,12 +474,12 @@
         .btn-reset:hover { background-color: #c0392b; }
 
         /* Modales */
-        .modal-admin-edit, .modal-timeout-alert {
+        .modal-admin-edit, .modal-timeout-alert, .modal-custom-alert {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.65);
-            z-index: 200;
+            z-index: 250;
             justify-content: center;
             align-items: center;
         }
@@ -509,6 +510,34 @@
         .timeout-title { color: #c0392b !important; font-weight: bold; font-size: 20px; animation: parpadeoAlerta 1s infinite; }
         .countdown-number { font-size: 42px; font-weight: 900; color: #c0392b; margin: 15px 0; }
         @keyframes parpadeoAlerta { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* Modal Alerta Bonita "Estimado usuario..." */
+        .modal-alert-box {
+            width: 360px;
+            border-top: 5px solid #f16821;
+        }
+        .modal-alert-box h3 {
+            color: #d35400;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .modal-alert-box p {
+            color: #34495e;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+        .btn-alert-ok {
+            background-color: #f16821;
+            color: white;
+            border: none;
+            padding: 9px 25px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-alert-ok:hover { background-color: #d85718; }
     </style>
 </head>
 <body>
@@ -584,11 +613,11 @@
                     </div>
                 </div>
                 
-                <!-- Columna derecha con Número de Guía y Botón Agregar -->
+                <!-- Columna derecha: Guía sin placeholder fijo + Botón Agregar -->
                 <div class="right-action-col">
                     <div class="box-guia-input">
                         <label for="numGuiaUT">Número de Guía:</label>
-                        <input type="text" id="numGuiaUT" placeholder="T528-00000000" autocomplete="off" maxlength="13">
+                        <input type="text" id="numGuiaUT" autocomplete="off" maxlength="13">
                     </div>
                     <button class="btn-guardar" onclick="guardarRegistro()">Agregar</button>
                 </div>
@@ -648,6 +677,15 @@
     </div>
 </div>
 
+<!-- Modal Alerta Visual "Estimado usuario..." -->
+<div id="modalAlertCustom" class="modal-custom-alert">
+    <div class="modal-content modal-alert-box">
+        <h3>Estimado usuario...</h3>
+        <p id="txtMensajeAlertaCustom"></p>
+        <button class="btn-alert-ok" onclick="cerrarAlertaCustom()">Entendido</button>
+    </div>
+</div>
+
 <div id="modalTimeoutAlert" class="modal-timeout-alert">
     <div class="modal-content" style="border: 3px solid #c0392b;">
         <h3 class="timeout-title">⚠️ ADVERTENCIA DE INACTIVIDAD</h3>
@@ -684,7 +722,7 @@
 
         <div class="modal-row">
             <label>N° Guía:</label>
-            <input type="text" id="editModalGuia" placeholder="T528-00000000" autocomplete="off" maxlength="13">
+            <input type="text" id="editModalGuia" autocomplete="off" maxlength="13">
         </div>
 
         <div class="modal-row">
@@ -734,7 +772,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     
-    // RAMA DEDICADA NUEVA: ut_cd (Inicia en blanco, sin data antigua)
     const DB_PATH = 'ut_cd';
 
     let usuarioLogueado = sessionStorage.getItem('ut_user_logged_cd') || "";
@@ -748,6 +785,8 @@
     let intervaloCuentaRegresiva;
     let segundosRestantesAlerta = 30;
 
+    let elementoFocoPostAlerta = null;
+
     const inputPlaca = document.getElementById('placaUT');
     const inputOS = document.getElementById('numEnvioOS');
     const inputGuia = document.getElementById('numGuiaUT');
@@ -758,6 +797,21 @@
 
     const inputUsuarioLogin = document.getElementById('userInput');
     const passInput = document.getElementById('passInput');
+
+    /* Función de Alerta Elegante "Estimado usuario..." */
+    function mostrarAlerta(mensaje, elementoFoco = null) {
+        elementoFocoPostAlerta = elementoFoco;
+        document.getElementById('txtMensajeAlertaCustom').innerText = mensaje;
+        document.getElementById('modalAlertCustom').style.display = 'flex';
+    }
+
+    function cerrarAlertaCustom() {
+        document.getElementById('modalAlertCustom').style.display = 'none';
+        if (elementoFocoPostAlerta) {
+            elementoFocoPostAlerta.focus();
+            elementoFocoPostAlerta = null;
+        }
+    }
 
     inputUsuarioLogin.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); passInput.focus(); }
@@ -783,7 +837,6 @@
         const u = inputUsuarioLogin.value.trim().toUpperCase();
         const p = passInput.value.trim();
 
-        // Nuevas credenciales solicitadas
         if (u === "SUPER528" && p === "Hpsa2030") {
             usuarioLogueado = "SUPERVISOR DE ALMACÉN";
             sessionStorage.setItem('ut_user_logged_cd', usuarioLogueado);
@@ -793,7 +846,7 @@
             sessionStorage.setItem('ut_user_logged_cd', usuarioLogueado);
             verificarSesion();
         } else {
-            alert("Usuario o contraseña incorrectos.");
+            mostrarAlerta("Usuario o contraseña incorrectos.", inputUsuarioLogin);
         }
     }
 
@@ -845,7 +898,6 @@
         });
     }
 
-    /* Control Inactividad */
     function reiniciarTemporizadorInactividad() {
         if (usuarioLogueado === "" || document.getElementById('modalTimeoutAlert').style.display === "flex") return;
         clearTimeout(temporizadorInactividad);
@@ -907,48 +959,62 @@
         lista.style.display = (lista.style.display === "block") ? "none" : "block";
     }
 
-    /* Validación y formato de Placa (XXX-XXX) */
+    /* Placa flexible (Permite letras y números en cualquier posición) */
     inputPlaca.addEventListener('input', function(e) {
         let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        let letras = val.slice(0, 3).replace(/[^A-Z]/g, '');
-        let resto = val.slice(3, 6);
-        let resultado = letras + resto;
-        if (resultado.length > 3) {
-            e.target.value = resultado.slice(0, 3) + '-' + resultado.slice(3, 6);
+        if (val.length > 6) val = val.slice(0, 6);
+        
+        if (val.length > 3) {
+            e.target.value = val.slice(0, 3) + '-' + val.slice(3, 6);
         } else {
-            e.target.value = resultado;
+            e.target.value = val;
         }
     });
 
     function esPlacaValida(placa) {
-        const regexPlaca = /^[A-Z]{3}-[0-9A-Z]{3}\$/;
+        // Valida que tenga exactamente 3 alfanuméricos, guion y 3 alfanuméricos
+        const regexPlaca = /^[A-Z0-9]{3}-[A-Z0-9]{3}\$/;
         return regexPlaca.test(placa);
     }
 
-    /* Formato automático de Guía tipo T528-00000000 */
-    function aplicarFormatoGuia(inputElement) {
-        inputElement.addEventListener('input', function(e) {
-            let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            if (val.length > 12) val = val.slice(0, 12);
-            
-            if (val.length > 4) {
-                let serie = val.slice(0, 4);
-                let correlativo = val.slice(4, 12).replace(/[^0-9]/g, '');
-                e.target.value = serie + '-' + correlativo;
-            } else {
-                e.target.value = val;
-            }
-        });
-    }
-    aplicarFormatoGuia(inputGuia);
-    aplicarFormatoGuia(document.getElementById('editModalGuia'));
+    /* Manejo del input de guía: prefijo dinámico T954- o T956- según sede */
+    inputGuia.addEventListener('input', function(e) {
+        const prefijo = codigoSeleccionado === '954' ? 'T954-' : 'T956-';
+        let val = e.target.value.toUpperCase();
 
-    /* Navegación con Enter */
+        if (!val.startsWith(prefijo)) {
+            let numeros = val.replace(/[^0-9]/g, '');
+            if (codigoSeleccionado && numeros.startsWith(codigoSeleccionado)) {
+                numeros = numeros.slice(codigoSeleccionado.length);
+            }
+            e.target.value = prefijo + numeros.slice(0, 8);
+            return;
+        }
+
+        let correlativo = val.slice(prefijo.length).replace(/[^0-9]/g, '');
+        if (correlativo.length > 8) correlativo = correlativo.slice(0, 8);
+        e.target.value = prefijo + correlativo;
+    });
+
+    // En edición admin: formato TXXX-XXXXXXXX
+    document.getElementById('editModalGuia').addEventListener('input', function(e) {
+        let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (val.length > 12) val = val.slice(0, 12);
+        if (val.length > 4) {
+            let serie = val.slice(0, 4);
+            let correlativo = val.slice(4, 12).replace(/[^0-9]/g, '');
+            e.target.value = serie + '-' + correlativo;
+        } else {
+            e.target.value = val;
+        }
+    });
+
+    /* Navegación rápida con Enter */
     inputPlaca.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             if (esPlacaValida(this.value.trim())) { inputOS.focus(); }
-            else { alert("Placa inválida. Recuerda que los primeros 3 caracteres deben ser letras (Ej: ABC-123)."); }
+            else { mostrarAlerta("Por favor, introduce una placa válida completa (Ej: ASY-823 o D4Z-727).", inputPlaca); }
         }
     });
     inputOS.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); inputEuroPallets.focus(); } });
@@ -991,6 +1057,14 @@
         document.getElementById('tituloFormulario').innerText = `Registrar para: ${sede} (${code})`;
         limpiarFormularioCompleto();
         document.getElementById('seccionFormulario').style.display = "block";
+        
+        // Autocompleta automáticamente según la sede seleccionada
+        if (code === '954') {
+            inputGuia.value = "T954-";
+        } else if (code === '956') {
+            inputGuia.value = "T956-";
+        }
+        
         inputPlaca.focus();
     }
 
@@ -1004,14 +1078,21 @@
         const jaulasValue = parseInt(inputJaulas.value.trim()) || 0;
 
         if (!esPlacaValida(placaValue)) {
-            alert("Por favor, introduce una placa válida completa (Ej: ABC-123). Los primeros 3 caracteres deben ser letras.");
-            inputPlaca.focus();
+            mostrarAlerta("Por favor, introduce una placa válida completa de 6 caracteres (Ej: ASY-823 o D4Z-727).", inputPlaca);
             return;
         }
 
         if (osValue === "") {
-            alert("Por favor, ingresa el Número de envío (OS).");
-            inputOS.focus();
+            mostrarAlerta("Por favor, ingresa el Número de envío (OS).", inputOS);
+            return;
+        }
+
+        // Validación estricta de número de guía
+        const prefijoEsperado = codigoSeleccionado === '954' ? 'T954-' : 'T956-';
+        const numeroCorrelativo = guiaValue.replace(prefijoEsperado, '').trim();
+
+        if (guiaValue === "" || guiaValue === prefijoEsperado || numeroCorrelativo === "") {
+            mostrarAlerta(`Debes ingresar el número correlativo de la guía después de ${prefijoEsperado} para poder registrar.`, inputGuia);
             return;
         }
 
@@ -1150,7 +1231,7 @@
 
     function eliminarSemanaCompletaAdmin() {
         const semanaAEliminar = document.getElementById('selectAdminSemanasEliminar').value;
-        if (!semanaAEliminar) { alert("No hay una semana válida seleccionada."); return; }
+        if (!semanaAEliminar) { mostrarAlerta("No hay una semana válida seleccionada."); return; }
 
         if (confirm(`⚠️ ¿Estás seguro de que deseas eliminar TODOS los registros de la:\n"${semanaAEliminar}"?`)) {
             let nodosEliminados = 0;
@@ -1161,7 +1242,7 @@
                 }
             });
             semanasSeleccionadasGlobal = ["TODOS"];
-            alert(`Éxito: Se eliminaron ${nodosEliminados} registros.`);
+            mostrarAlerta(`Se eliminaron correctamente los ${nodosEliminados} registros de esa semana.`);
         }
     }
 
@@ -1245,7 +1326,7 @@
         const placaVal = document.getElementById('editModalPlaca').value.trim().toUpperCase();
 
         if (!esPlacaValida(placaVal)) { 
-            alert("Formato de placa inválido (debe iniciar con 3 letras, ej: ABC-123)."); 
+            mostrarAlerta("Formato de placa inválido (debe contener 6 caracteres, ej: ASY-823 o D4Z-727).", document.getElementById('editModalPlaca')); 
             return; 
         }
 
@@ -1262,11 +1343,11 @@
         });
 
         cerrarEdicionModal();
-        alert("El registro ha sido actualizado con éxito.");
+        mostrarAlerta("El registro ha sido modificado con éxito.");
     }
 
     function exportarExcel() {
-        if (historial.length === 0) { alert("No hay datos para exportar."); return; }
+        if (historial.length === 0) { mostrarAlerta("No hay datos para exportar."); return; }
 
         let csvContent = "\uFEFF"; 
         csvContent += "Sede / CD;N° Placa;N° Envio (OS);N° Guia;Cantidad Euro Pallet;Cantidad Caja Sensible;Cantidad Mueble Pallet;Cantidad Jaulas;Semana;Fecha y Hora;Registrado Por\n";
